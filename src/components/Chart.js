@@ -7,13 +7,18 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import Switch from '@mui/material/Switch';
 
 function Chart(props) {
+
+    const [reducedElectricField, setReducedElectricField] = useState(false);
     const [quantityToPlot, setQuantityToPlot] = useState("drift-velocity");
 
+    const referencePressure = props.data["pressure"];
     const data = props.data["electric_field"].map((electricField, index) => {
         return {
-            "Electric Field": String(electricField),
+            "Electric Field": electricField,
+            "Reduced Electric Field": electricField / referencePressure,
             "Drift Velocity": props.data["electron_drift_velocity"][index],
             "Transversal Diffusion": props.data["electron_transversal_diffusion"][index],
             "Longitudinal Diffusion": props.data["electron_longitudinal_diffusion"][index],
@@ -26,7 +31,7 @@ function Chart(props) {
             <FormControl id="plot-selection" style={{
                 justifyContent: 'center', alignItems: 'center', display: 'flex'
             }}>
-                <FormLabel>Graph</FormLabel>
+                <FormLabel>Graph Options</FormLabel>
                 <RadioGroup
                     row
                     name="controlled-radio-buttons-group"
@@ -36,26 +41,42 @@ function Chart(props) {
                     <FormControlLabel value="drift-velocity" control={<Radio />} label="Drift Velocity" />
                     <FormControlLabel value="diffusion" control={<Radio />} label="Diffusion" />
                 </RadioGroup>
+                <FormControlLabel control={<Switch
+                    checked={reducedElectricField}
+                    onChange={() => { setReducedElectricField(!reducedElectricField) }}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                />} label="Reduced Electric Field" />
             </FormControl>
+
             <ResponsiveContainer width={"100%"} height={"100%"} aspect={2.5}>
                 <LineChart
 
                     data={data}
                     margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
+                        top: 0,
+                        right: 20,
+                        left: 25,
+                        bottom: 20,
                     }}
                 >
                     <CartesianGrid strokeDasharray="3   3" />
-                    <XAxis
-                        allowDataOverflow
-                        dataKey="Electric Field"
-                        label={{ value: 'Electric Field [V/cm]', offset: 0, position: "insideBottom" }}
-                        type="number"
-                        padding={{ left: 10, right: 10 }}
-                    />
+
+                    {(() => {
+                        switch (reducedElectricField) {
+                            case true: return <XAxis
+                                allowDataOverflow
+                                dataKey="Reduced Electric Field"
+                                label={{ value: 'Electric Field / Pressure [V/cm/bar]', offset: -10, position: "insideBottom" }}
+                                type="number"
+                            />;
+                            case false: return <XAxis
+                                allowDataOverflow
+                                dataKey="Electric Field"
+                                label={{ value: 'Electric Field [V/cm]', offset: -10, position: "insideBottom" }}
+                                type="number"
+                            />
+                        }
+                    })()}
 
                     {(() => {
                         switch (quantityToPlot) {
@@ -63,7 +84,7 @@ function Chart(props) {
                                 <>
                                     <YAxis
                                         allowDataOverflow
-                                        label={{ value: 'Drift Velocity (mm/μs)', angle: -90, position: 'insideLeft', offset: 0 }}
+                                        label={{ value: 'Drift Velocity (mm/μs)', angle: -90, position: 'insideLeft', offset: -10 }}
                                         type="number"
                                     />
                                     <Line type="monotone" dataKey="Drift Velocity" stroke="red" />
@@ -73,7 +94,7 @@ function Chart(props) {
                                 <>
                                     <YAxis
                                         allowDataOverflow
-                                        label={{ value: 'Diffusion Coefficient [√cm]', angle: -90, position: 'insideLeft' }}
+                                        label={{ value: 'Diffusion Coefficient [√cm]', angle: -90, position: 'insideLeft', offset: -10 }}
                                         type="number"
                                     />
                                     <Line type="monotone" dataKey="Transversal Diffusion" stroke="magenta" />
@@ -84,7 +105,7 @@ function Chart(props) {
                     })()}
 
                     <Tooltip />
-                    <Legend />
+                    <Legend layout="horizontal" verticalAlign="top" align="center" />
 
                 </LineChart>
             </ResponsiveContainer>
