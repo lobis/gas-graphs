@@ -22,7 +22,9 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npm run build
+        run: |
+          export PUBLIC_URL=https://lobis.github.io/gas-graphs/
+          npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
