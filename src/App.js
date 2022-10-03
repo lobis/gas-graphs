@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import Chart from './components/Chart';
+import Dashboard from './components/Dashboard';
 
 function App() {
   const [data, setData] = useState(null);
@@ -9,7 +9,6 @@ function App() {
     fetch("gas/json/Ar2p3iC4H10-T20C-P1p4bar-nColl15-E0t1000Vcm-nE200lin.gas.json").then((response) => {
       response.json().then(
         json => {
-          console.log("fetched")
           setData(json)
         })
     });
@@ -17,7 +16,7 @@ function App() {
 
 
   return (
-    data ? <Chart data={data} /> : null
+    data ? <Dashboard data={data} /> : null
   );
 }
 
