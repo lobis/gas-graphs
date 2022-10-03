@@ -32,10 +32,13 @@ function Dashboard({ data }) {
 
     useEffect(() => {
         if (quantityToPlot === "drift-velocity") {
-            setY(data["electron_drift_velocity"])
-            setYTitle("Drift Velocity (mm/μs)")
-        } else if (quantityToPlot === "diffusion") {
+            setY(data["electron_drift_velocity"].map(x => x * 1000)) // data is in cm/ns
+            setYTitle("Drift Velocity (cm/μs)")
+        } else if (quantityToPlot === "longitudinal-diffusion") {
             setY(data["electron_longitudinal_diffusion"])
+            setYTitle("Diffusion Coefficient [√cm]")
+        } else if (quantityToPlot === "transversal-diffusion") {
+            setY(data["electron_transversal_diffusion"])
             setYTitle("Diffusion Coefficient [√cm]")
         }
     }, [quantityToPlot, data])
@@ -53,7 +56,8 @@ function Dashboard({ data }) {
                     onChange={(event) => { setQuantityToPlot(event.target.value) }}
                 >
                     <FormControlLabel value="drift-velocity" control={<Radio />} label="Drift Velocity" />
-                    <FormControlLabel value="diffusion" control={<Radio />} label="Diffusion" />
+                    <FormControlLabel value="longitudinal-diffusion" control={<Radio />} label="Longitudinal Diffusion" />
+                    <FormControlLabel value="transversal-diffusion" control={<Radio />} label="Transversal Diffusion" />
                 </RadioGroup>
                 <FormControlLabel control={<Switch
                     checked={reducedElectricFieldSelected}
