@@ -10,6 +10,7 @@
 
 # production
 /build
+/public/gas/list.json
 
 # misc
 .DS_Store
