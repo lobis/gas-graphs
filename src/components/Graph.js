@@ -9,6 +9,18 @@ const Graph = ({ x, y, xTitle, yTitle }) => {
     const [JSROOT, setJSROOT] = useState();
     const [graphingAvailable, setGraphingAvailable] = useState(false);
 
+    // render component on resize
+    const [, setWindowSize] = useState([window.innerWidth, window.innerHeight]);
+    const updateWindowSize = () => {
+        setWindowSize([window.innerWidth, window.innerHeight])
+    }
+    useEffect(() => {
+        window.addEventListener('resize', updateWindowSize);
+        return () => {
+            window.removeEventListener('resize', updateWindowSize)
+        }
+    }, [])
+
     useEffect(() => {
         if (window && document) {
             const script = document.createElement('script')
@@ -42,12 +54,14 @@ const Graph = ({ x, y, xTitle, yTitle }) => {
     window.graph = graph
     graph.fLineColor = 2;
     graph.fMarkerSize = 2;
-    graph.fTitle = "Gas Graphs"
 
-    JSROOT.redraw(graphId, graph, "").then(() => {
+    let multiGraph = JSROOT.createTMultiGraph(graph);
+    // multiGraph.fTitle = "Gas Graphs"
+
+    JSROOT.redraw(graphId, multiGraph, "").then(() => {
         if (graph.fHistogram) {
-            graph.fHistogram.fXaxis.fTitle = xTitle;
-            graph.fHistogram.fYaxis.fTitle = yTitle;
+            //graph.fHistogram.fXaxis.fTitle = xTitle;
+            //graph.fHistogram.fYaxis.fTitle = yTitle;
         }
     });
 
