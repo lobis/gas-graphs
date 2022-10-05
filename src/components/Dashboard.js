@@ -9,6 +9,7 @@ import FormLabel from '@mui/material/FormLabel';
 import Switch from '@mui/material/Switch';
 
 import Graph from "./Graph";
+import GasSelector from "./GasSelector";
 
 function Dashboard({ data }) {
 
@@ -45,6 +46,7 @@ function Dashboard({ data }) {
 
     return (
         <div>
+            <GasSelector />
             <FormControl id="plot-selection" style={{
                 justifyContent: 'center', alignItems: 'center', display: 'flex'
             }}>
