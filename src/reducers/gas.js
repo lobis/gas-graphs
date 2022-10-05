@@ -10,6 +10,11 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 availableGasFiles: availableGasFiles
             }
+        case actionTypes.LOAD_GAS_FILE:
+            return {
+                ...state,
+                loadedGases: { ...state.loadedGases, [action.payload.gasFile]: action.payload.data }
+            }
         default:
             return state
     }
