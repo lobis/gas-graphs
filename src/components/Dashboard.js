@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux"
 
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -11,7 +12,11 @@ import Switch from '@mui/material/Switch';
 import Graph from "./Graph";
 import GasSelector from "./GasSelector";
 
-function Dashboard({ data }) {
+function Dashboard() {
+
+    const selectedGasesData = useSelector(state => Object.fromEntries(state.gas.selectedGases.map(gas => [gas, state.gas.loadedGases[gas]])))
+
+    const data = Object.keys(selectedGasesData).length === 0 ? undefined : selectedGasesData[Object.keys(selectedGasesData)[0]]
 
     const [reducedElectricFieldSelected, setReducedElectricFieldSelected] = useState(false);
     const [quantityToPlot, setQuantityToPlot] = useState("drift-velocity");
@@ -22,6 +27,9 @@ function Dashboard({ data }) {
     const [yTitle, setYTitle] = useState("");
 
     useEffect(() => {
+        if (!data) {
+            return;
+        }
         if (!reducedElectricFieldSelected) {
             setX(data["electric_field"]);
             setXTitle("Electric Field [V/cm]")
@@ -32,6 +40,9 @@ function Dashboard({ data }) {
     }, [reducedElectricFieldSelected, data])
 
     useEffect(() => {
+        if (!data) {
+            return;
+        }
         if (quantityToPlot === "drift-velocity") {
             setY(data["electron_drift_velocity"].map(x => x * 1000)) // data is in cm/ns
             setYTitle("Drift Velocity (cm/μs)")
@@ -70,6 +81,7 @@ function Dashboard({ data }) {
             <Graph x={x} y={y} xTitle={xTitle} yTitle={yTitle} />
         </div>
     );
+
 }
 
 export default Dashboard;

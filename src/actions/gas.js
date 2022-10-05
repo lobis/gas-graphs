@@ -4,6 +4,7 @@ import * as api from "../api"
 export const actionTypes = {
     GET_AVAILABLE_GAS_FILES: "GET_AVAILABLE_GAS_FILES",
     LOAD_GAS_FILE: "LOAD_GAS_FILE",
+    UPDATE_SELECTED_GASES: "UPDATE_SELECTED_GASES",
 }
 
 export const getAvailableGasFiles = () => async (dispatch) => {
@@ -24,4 +25,9 @@ export const loadGasFile = (gasFile) => async (dispatch) => {
     } catch (error) {
         console.error("actions/loadGasFile:", error.message)
     }
+}
+
+export const updateSelectedGases = (gases) => async (dispatch) => {
+    console.log("actions/updateSelectedGases")
+    dispatch({ type: actionTypes.UPDATE_SELECTED_GASES, payload: gases })
 }
