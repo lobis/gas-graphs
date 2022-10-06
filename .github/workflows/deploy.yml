@@ -19,17 +19,12 @@ jobs:
         run: |
           cd public/gas/garfield
           for i in *.gas.tar.gz; do tar -xzvf $i; done
-          rm *.gas
+          rm *.gas.tar.gz
 
       - name: generate gas json files
         run: |
           cd public/gas/garfield
-          for i in *.gas; do echo $i; done
-          for i in *.gas; do
-            file = $i
-            echo $file
-            gas-cli read -i $file --dir ../json --json
-          ;done
+          for i in *.gas; do gas-cli read -i $i --dir ../json --json; done
 
       - name: Cache gas files
         uses: actions/cache@v3
