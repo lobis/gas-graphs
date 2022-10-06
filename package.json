@@ -24,7 +24,8 @@
     "build": "npm run gasFilesList && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "gasFilesList": "node ./scripts/gasFilesList.js"
+    "gasFilesList": "node ./scripts/gasFilesList.js",
+    "compressGarfieldGasFiles": "for i in ./public/gas/garfield/*.gas; do tar -czvf $i.tar.gz $i; done"
   },
   "eslintConfig": {
     "extends": [

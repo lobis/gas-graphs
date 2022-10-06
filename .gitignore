@@ -11,6 +11,11 @@
 # production
 /build
 /public/gas/list.json
+*.gas
+*.gas.json
+public/gas/json/*
+public/gas/garfield/*
+!public/gas/garfield/*.gas.tar.gz
 
 # misc
 .DS_Store
