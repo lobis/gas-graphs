@@ -2,13 +2,21 @@
 import { useDispatch, useSelector } from "react-redux"
 import React, { useEffect } from 'react';
 
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 
 import { getAvailableGasFiles, loadGasFile, updateSelectedGases } from "../actions/gas.js"
+
 
 const GasSelector = () => {
     const dispatch = useDispatch()
@@ -25,7 +33,6 @@ const GasSelector = () => {
         dispatch(getAvailableGasFiles())
     }, [dispatch, availableGasFiles]);
 
-    // TODO: add loadedGases to dependency array avoiding circular reference
     useEffect(() => {
         // do not load same gas multiple times
         if (selectedGases.length === 0 && availableGasFiles.length > 0) {
@@ -43,24 +50,68 @@ const GasSelector = () => {
         <div style={{
             justifyContent: 'center', alignItems: 'center', display: 'flex'
         }}>
-            <Box sx={{ minWidth: 120 }}>
-                <FormControl fullWidth>
-                    <InputLabel id="select-gas-file-label">Gas File</InputLabel>
-                    <Select
-                        labelId="select-gas-file-label"
-                        value={selectedGases.length > 0 ? selectedGases[0] : ""}
-                        label="Gas File"
-                        onChange={(event) => { dispatch(updateSelectedGases([event.target.value])) }}
-                    >
-                        {
-                            availableGasFiles.map((gas, index) => {
-                                return <MenuItem key={index} value={gas.filename}>{gas.filename}</MenuItem>
-                            })
-                        }
+            <TableContainer component={Paper} style={{ "margin": 20 }}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="left">Gas File</TableCell>
+                            <TableCell align="right">Composition</TableCell>
+                            <TableCell align="right">Pressure&nbsp;(bar)</TableCell>
+                            <TableCell align="right">Temperature&nbsp;(ºC)</TableCell>
+                            <TableCell align="right">
+                                <IconButton disabled={true}>
+                                    <AddBoxOutlinedIcon color="success" />
+                                </IconButton>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {availableGasFiles.filter(gas => { return selectedGases.includes(gas.filename) }).map((gas, index) => (
+                            <TableRow key={index}>
+                                <TableCell align="left">
+                                    {
+                                        <Select
+                                            labelId="select-gas-file-label"
+                                            value={gas.filename}
+                                            label="Gas File"
+                                            onChange={(event) => { dispatch(updateSelectedGases([event.target.value])) }}
+                                        >
+                                            {
+                                                availableGasFiles.map((gas, index) => {
+                                                    return <MenuItem key={index} value={gas.filename}>{
+                                                        gas.components.labels.map((label, index) => {
+                                                            const fraction = (gas.components.fractions[index] * 100).toPrecision(3);
+                                                            return [label, fraction.toString() + "%"].join(" ")
+                                                        }).join(" ")
+                                                    }</MenuItem>
+                                                })
+                                            }
 
-                    </Select>
-                </FormControl>
-            </Box>
+                                        </Select>
+                                    }
+                                </TableCell>
+                                <TableCell align="right">{
+                                    // TODO: not duplicate this code
+                                    gas.components.labels.map((label, index) => {
+                                        const fraction = (gas.components.fractions[index] * 100).toPrecision(3);
+                                        return [label, fraction.toString() + "%"].join(" ")
+                                    }).join(" ")
+                                }</TableCell>
+                                <TableCell align="right">{gas.pressure.toPrecision(3)}</TableCell>
+                                <TableCell align="right">{gas.temperature.toPrecision(3)}</TableCell>
+                                <TableCell align="right">
+                                    {
+                                        <IconButton aria-label="delete" disabled={selectedGases.length <= 1}>
+                                            <DeleteOutlineOutlinedIcon />
+                                        </IconButton>
+                                    }
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
         </div>
     );
 }

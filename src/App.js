@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Dashboard from './components/Dashboard';
 
 function App() {

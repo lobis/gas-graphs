@@ -65,7 +65,7 @@ const Graph = ({ x, y, xTitle, yTitle }) => {
         }
     });
 
-    return (<div id={graphId} style={{ width: "100%", height: "800px" }} />)
+    return (<div id={graphId} style={{ width: "100%", height: "600px" }} />)
 }
 
 export default Graph;
