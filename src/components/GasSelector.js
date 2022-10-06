@@ -19,17 +19,17 @@ const GasSelector = () => {
 
     useEffect(() => {
         // do not load it multiple times
-        if (availableGasFiles.names.length > 0) {
+        if (availableGasFiles.length > 0) {
             return;
         }
         dispatch(getAvailableGasFiles())
-    }, [dispatch, availableGasFiles.names.length]);
+    }, [dispatch, availableGasFiles]);
 
     // TODO: add loadedGases to dependency array avoiding circular reference
     useEffect(() => {
         // do not load same gas multiple times
-        if (selectedGases.length === 0 && availableGasFiles.names.length > 0) {
-            dispatch(updateSelectedGases([availableGasFiles.names[0]]))
+        if (selectedGases.length === 0 && availableGasFiles.length > 0) {
+            dispatch(updateSelectedGases([availableGasFiles[0].filename]))
         }
 
         selectedGases.forEach(name => {
@@ -37,7 +37,7 @@ const GasSelector = () => {
                 dispatch(loadGasFile(name))
             }
         })
-    }, [dispatch, selectedGases, availableGasFiles.names, loadedGasNames]);
+    }, [dispatch, selectedGases, availableGasFiles, loadedGasNames]);
 
     return (
         <div style={{
@@ -53,8 +53,8 @@ const GasSelector = () => {
                         onChange={(event) => { dispatch(updateSelectedGases([event.target.value])) }}
                     >
                         {
-                            availableGasFiles.names.map((name, index) => {
-                                return <MenuItem key={index} value={name}>{name}</MenuItem>
+                            availableGasFiles.map((gas, index) => {
+                                return <MenuItem key={index} value={gas.filename}>{gas.filename}</MenuItem>
                             })
                         }
 

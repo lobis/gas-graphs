@@ -1,6 +1,6 @@
 import { actionTypes } from "../actions/gas"
 
-const initialState = { availableGasFiles: { "names": [] }, loadedGases: {}, selectedGases: [] }
+const initialState = { availableGasFiles: [], loadedGases: {}, selectedGases: [] }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
