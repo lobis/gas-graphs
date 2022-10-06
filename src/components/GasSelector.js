@@ -1,6 +1,6 @@
 
 import { useDispatch, useSelector } from "react-redux"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -15,6 +15,7 @@ const GasSelector = () => {
 
     const availableGasFiles = useSelector(state => state.gas.availableGasFiles)
     const selectedGases = useSelector(state => state.gas.selectedGases)
+    const loadedGasNames = useSelector(state => Object.keys(state.gas.loadedGases))
 
     useEffect(() => {
         // do not load it multiple times
@@ -27,18 +28,16 @@ const GasSelector = () => {
     // TODO: add loadedGases to dependency array avoiding circular reference
     useEffect(() => {
         // do not load same gas multiple times
-        if (selectedGases.length > 0) {
-            dispatch(loadGasFile(selectedGases[0]))
+        if (selectedGases.length === 0 && availableGasFiles.names.length > 0) {
+            dispatch(updateSelectedGases([availableGasFiles.names[0]]))
         }
-    }, [dispatch, selectedGases]);
 
-    useEffect(() => {
-        if (selectedGases.length === 0) {
-            if (availableGasFiles.names.length > 0) {
-                dispatch(updateSelectedGases([availableGasFiles.names[0]]))
+        selectedGases.forEach(name => {
+            if (!loadedGasNames.includes(name)) {
+                dispatch(loadGasFile(name))
             }
-        }
-    }, [availableGasFiles, selectedGases]);
+        })
+    }, [dispatch, selectedGases, availableGasFiles.names, loadedGasNames]);
 
     return (
         <div style={{
