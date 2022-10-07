@@ -19,7 +19,7 @@ const ColorPicker = ({ initialColor = { r: '255', g: '0', b: '0', a: '1', }, set
         if (JSON.stringify(selectedGases[index].color) !== JSON.stringify(state.color)) {
             setColor(state.color)
         }
-    }, [state.color, setColor, selectedGases])
+    }, [state.color, setColor, selectedGases, index])
 
     const handleChange = (newColor) => {
         setState({ ...state, color: newColor.rgb })
