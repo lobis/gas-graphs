@@ -36,13 +36,13 @@ const GasSelector = () => {
     }, [dispatch, availableGasFiles]);
 
     useEffect(() => {
-        // do not load same gas multiple times
         if (selectedGases.length === 0 && availableGasFiles.length >= 3) {
-            dispatch(updateSelectedGases([getGasSelectionObject(availableGasFiles[0]), getGasSelectionObject(availableGasFiles[1]), getGasSelectionObject(availableGasFiles[2])]))
+            dispatch(updateSelectedGases([getGasSelectionObject(availableGasFiles[0])]))
         }
     }, [dispatch, selectedGases, availableGasFiles]);
 
     useEffect(() => {
+        // do not load same gas multiple times
         selectedGases.forEach(entry => {
             if (!Object.keys(loadedGases).includes(entry.filename)) {
                 dispatch(loadGasFile(entry.filename))
@@ -66,7 +66,9 @@ const GasSelector = () => {
                             <TableCell />
                             <TableCell />
                             <TableCell align="right">
-                                <IconButton disabled={true}>
+                                <IconButton disabled={selectedGases.length >= 5} onClick={() => {
+                                    dispatch(updateSelectedGases([...selectedGases, getGasSelectionObject(availableGasFiles[0])]))
+                                }}>
                                     <AddBoxOutlinedIcon color="success" />
                                 </IconButton>
                             </TableCell>
@@ -130,7 +132,9 @@ const GasSelector = () => {
                                 <TableCell align="right">
                                     {
                                         <IconButton aria-label="delete" disabled={selectedGases.length <= 1} onClick={() => {
-                                            dispatch(updateSelectedGases(selectedGases.filter(entry => entry.filename !== gas.filename)))
+                                            const newSelectedGases = [...selectedGases]
+                                            newSelectedGases.splice(index, 1)
+                                            dispatch(updateSelectedGases(newSelectedGases))
                                         }}>
                                             <DeleteOutlineOutlinedIcon />
                                         </IconButton>
