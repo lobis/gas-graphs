@@ -21,9 +21,11 @@ function Dashboard() {
     const loadedGases = useSelector(state => state.gas.loadedGases)
 
     const [selectedGasesData, setSelectedGasesData] = useState([]);
+    const [selectedGasesVisible, setSelectedGasesVisible] = useState([]);
 
     useEffect(() => {
         setSelectedGasesData(Array.from(selectedGases.map(gas => gas.visibility ? loadedGases[gas.filename] : undefined)).filter(x => x !== undefined))
+        setSelectedGasesVisible(Array.from(selectedGases.filter(gas => gas.visibility)))
     }, [loadedGases, selectedGases])
 
     const [reducedElectricFieldSelected, setReducedElectricFieldSelected] = useState(false);
@@ -62,8 +64,6 @@ function Dashboard() {
         }
     }, [quantityToPlot, selectedGasesData])
 
-    //    console.log("DATA: ", xData, yData)
-
     return (
         <div>
             <GasSelector />
@@ -87,7 +87,7 @@ function Dashboard() {
                 />} label="Reduced Electric Field" />
             </FormControl>
 
-            <Graph xTitle={xTitle} yTitle={yTitle} xData={xData} yData={yData} names={selectedGases.map(gas => gas.filename)} colors={selectedGases.map(gas => colorRGBToHex(gas.color))} />
+            <Graph xTitle={xTitle} yTitle={yTitle} xData={xData} yData={yData} names={selectedGasesVisible.map((gas, index) => gas.filename + `_${index}`)} colors={selectedGasesVisible.map(gas => colorRGBToHex(gas.color))} />
         </div>
     );
 
