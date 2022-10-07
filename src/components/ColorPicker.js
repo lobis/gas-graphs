@@ -1,6 +1,7 @@
 import { GithubPicker } from 'react-color';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from "react-redux"
 
 const ColorPicker = ({ initialColor = { r: '255', g: '0', b: '0', a: '1', }, setColor }) => {
     const [state, setState] = useState({
@@ -8,16 +9,24 @@ const ColorPicker = ({ initialColor = { r: '255', g: '0', b: '0', a: '1', }, set
         color: initialColor
     });
 
+    const selectedGases = useSelector(state => state.gas.selectedGases)
+
     const handleClick = () => { setState({ ...state, displayColorPicker: !state.displayColorPicker }) }
 
     const handleClose = () => { setState({ ...state, displayColorPicker: false }) }
 
+    useEffect(() => {
+        selectedGases.forEach(entry => {
+            if (JSON.stringify(entry.color) !== JSON.stringify(state.color)) {
+                if (setColor) {
+                    setColor(state.color)
+                }
+            }
+        })
+    }, [state.color, setColor, selectedGases])
+
     const handleChange = (newColor) => {
         setState({ ...state, color: newColor.rgb })
-        // this cannot be on a `useEffect` because it would cause an infinite loop
-        if (setColor) {
-            setColor(newColor.rgb)
-        }
     }
 
     const styles = {
