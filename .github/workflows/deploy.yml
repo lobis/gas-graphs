@@ -32,7 +32,7 @@ jobs:
         id: cache
         with:
           key: gas-files-${{ github.run_id }}
-          path: public
+          path: public/gas
 
   build:
     name: Build React App
@@ -48,7 +48,7 @@ jobs:
         id: cache
         with:
           key: gas-files-${{ github.run_id }}
-          path: public
+          path: public/gas
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
