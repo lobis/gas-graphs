@@ -14,9 +14,11 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 
 import { getAvailableGasFiles, loadGasFile, updateSelectedGases } from "../actions/gas.js"
-
+import ColorPicker from "./ColorPicker.js"
 
 const GasSelector = () => {
     const dispatch = useDispatch()
@@ -58,6 +60,8 @@ const GasSelector = () => {
                             <TableCell align="right">Composition</TableCell>
                             <TableCell align="right">Pressure&nbsp;(bar)</TableCell>
                             <TableCell align="right">Temperature&nbsp;(ºC)</TableCell>
+                            <TableCell />
+                            <TableCell />
                             <TableCell align="right">
                                 <IconButton disabled={true}>
                                     <AddBoxOutlinedIcon color="success" />
@@ -99,6 +103,18 @@ const GasSelector = () => {
                                 }</TableCell>
                                 <TableCell align="right">{gas.pressure.toPrecision(3)}</TableCell>
                                 <TableCell align="right">{gas.temperature.toPrecision(3)}</TableCell>
+                                <TableCell align="right">
+                                    {
+                                        <ColorPicker />
+                                    }
+                                </TableCell>
+                                <TableCell align="right">
+                                    {
+                                        <IconButton aria-label="delete">
+                                            <VisibilityOutlinedIcon />
+                                        </IconButton>
+                                    }
+                                </TableCell>
                                 <TableCell align="right">
                                     {
                                         <IconButton aria-label="delete" disabled={selectedGases.length <= 1}>
