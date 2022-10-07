@@ -3,7 +3,7 @@ import { GithubPicker } from 'react-color';
 import React, { useState, useEffect } from 'react';
 import { useSelector } from "react-redux"
 
-const ColorPicker = ({ initialColor = { r: '255', g: '0', b: '0', a: '1', }, setColor }) => {
+const ColorPicker = ({ initialColor = { r: '255', g: '0', b: '0', a: '1', }, setColor = () => { }, index = 0 }) => {
     const [state, setState] = useState({
         displayColorPicker: false,
         color: initialColor
@@ -16,13 +16,9 @@ const ColorPicker = ({ initialColor = { r: '255', g: '0', b: '0', a: '1', }, set
     const handleClose = () => { setState({ ...state, displayColorPicker: false }) }
 
     useEffect(() => {
-        selectedGases.forEach(entry => {
-            if (JSON.stringify(entry.color) !== JSON.stringify(state.color)) {
-                if (setColor) {
-                    setColor(state.color)
-                }
-            }
-        })
+        if (JSON.stringify(selectedGases[index].color) !== JSON.stringify(state.color)) {
+            setColor(state.color)
+        }
     }, [state.color, setColor, selectedGases])
 
     const handleChange = (newColor) => {

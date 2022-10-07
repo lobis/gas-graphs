@@ -111,11 +111,11 @@ const GasSelector = () => {
                                 <TableCell align="right">{gas.temperature.toPrecision(3)}</TableCell>
                                 <TableCell align="right">
                                     {
-                                        <ColorPicker initialColor={{ r: '255', g: '0', b: '0', a: '1', }} setColor={(newColor) => {
+                                        <ColorPicker initialColor={gas.color} setColor={(newColor) => {
                                             const newSelectedGases = [...selectedGases]
                                             newSelectedGases[index] = { ...newSelectedGases[index], color: newColor }
                                             dispatch(updateSelectedGases(newSelectedGases))
-                                        }} />
+                                        }} index={index} />
                                     }
                                 </TableCell>
                                 <TableCell align="right">
