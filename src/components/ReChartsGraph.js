@@ -10,8 +10,6 @@ function Graph({ xData = [], yData = [], names = [], xTitle = "", yTitle = "", c
         })
     }).flat()
 
-    console.log(colors)
-
     return (
         <div>
             <ResponsiveContainer width={"100%"} height={"100%"} aspect={2.5}>
@@ -44,8 +42,8 @@ function Graph({ xData = [], yData = [], names = [], xTitle = "", yTitle = "", c
 
                     <Tooltip />
 
-                    {names.map((name, index) => {
-                        return <Line key={index} type="monotone" dataKey={name} stroke={colors[index] ? colors[index] : "red"} dot={false} animationDuration={0} />
+                    {xData.map((x, index) => {
+                        return <Line key={index} type="monotone" dataKey={names[index]} stroke={colors[index] ? colors[index] : "red"} dot={x.length < 100} animationDuration={0} />
                     })}
 
                     <Legend layout="horizontal" verticalAlign="top" align="center" />
