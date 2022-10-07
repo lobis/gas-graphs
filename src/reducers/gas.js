@@ -12,7 +12,7 @@ const reducer = (state = initialState, action) => {
         case actionTypes.LOAD_GAS_FILE:
             return {
                 ...state,
-                loadedGases: { ...state.loadedGases, [action.payload.gasFile]: action.payload.data }
+                loadedGases: { ...state.loadedGases, [action.payload.filename]: action.payload.data }
             }
         case actionTypes.UPDATE_SELECTED_GASES:
             return {

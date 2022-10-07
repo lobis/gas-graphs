@@ -2,8 +2,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import React, { useEffect } from 'react';
 
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -16,6 +14,8 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 import { getAvailableGasFiles, loadGasFile, updateSelectedGases } from "../actions/gas.js"
 import ColorPicker from "./ColorPicker.js"
@@ -25,7 +25,7 @@ const GasSelector = () => {
 
     const availableGasFiles = useSelector(state => state.gas.availableGasFiles)
     const selectedGases = useSelector(state => state.gas.selectedGases)
-    const loadedGasNames = useSelector(state => Object.keys(state.gas.loadedGases))
+    const loadedGases = useSelector(state => state.gas.loadedGases)
 
     useEffect(() => {
         // do not load it multiple times
@@ -37,17 +37,20 @@ const GasSelector = () => {
 
     useEffect(() => {
         // do not load same gas multiple times
-        if (selectedGases.length === 0 && availableGasFiles.length > 0) {
-            dispatch(updateSelectedGases([availableGasFiles[0].filename]))
+        if (selectedGases.length === 0 && availableGasFiles.length >= 3) {
+            dispatch(updateSelectedGases([getGasSelectionObject(availableGasFiles[0]), getGasSelectionObject(availableGasFiles[1]), getGasSelectionObject(availableGasFiles[2])]))
         }
+    }, [dispatch, selectedGases, availableGasFiles]);
 
-        selectedGases.forEach(name => {
-            if (!loadedGasNames.includes(name)) {
-                dispatch(loadGasFile(name))
+    useEffect(() => {
+        selectedGases.forEach(entry => {
+            if (!Object.keys(loadedGases).includes(entry.filename)) {
+                dispatch(loadGasFile(entry.filename))
             }
         })
-    }, [dispatch, selectedGases, availableGasFiles, loadedGasNames]);
+    }, [dispatch, selectedGases, loadedGases])
 
+    const getGasSelectionObject = (gas) => { return { ...gas, visibility: true, color: { r: '255', g: '0', b: '0', a: '1', } } }
     return (
         <div style={{
             justifyContent: 'center', alignItems: 'center', display: 'flex'
@@ -70,28 +73,29 @@ const GasSelector = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {availableGasFiles.filter(gas => { return selectedGases.includes(gas.filename) }).map((gas, index) => (
+                        {selectedGases.map((gas, index) => (
                             <TableRow key={index}>
                                 <TableCell align="left">
                                     {
-                                        <Select
-                                            labelId="select-gas-file-label"
+                                        <Autocomplete
+                                            disablePortal
+                                            options={availableGasFiles.map(
+                                                gas => gas.filename
+                                            )}
+                                            sx={{ width: 300 }}
+                                            renderInput={(params) => <TextField {...params} label="Gas File" />}
                                             value={gas.filename}
-                                            label="Gas File"
-                                            onChange={(event) => { dispatch(updateSelectedGases([event.target.value])) }}
-                                        >
-                                            {
-                                                availableGasFiles.map((gas, index) => {
-                                                    return <MenuItem key={index} value={gas.filename}>{
-                                                        gas.components.labels.map((label, index) => {
-                                                            const fraction = (gas.components.fractions[index] * 100).toPrecision(3);
-                                                            return [label, fraction.toString() + "%"].join(" ")
-                                                        }).join(" ")
-                                                    }</MenuItem>
-                                                })
-                                            }
-
-                                        </Select>
+                                            onInputChange={(event, newInputValue) => {
+                                            }}
+                                            onChange={(event, newValue) => {
+                                                if (newValue !== null) {
+                                                    const newGas = availableGasFiles.filter(entry => entry.filename === newValue)[0]
+                                                    const newSelectedGases = [...selectedGases]
+                                                    newSelectedGases[index] = getGasSelectionObject(newGas)
+                                                    dispatch(updateSelectedGases(newSelectedGases))
+                                                }
+                                            }}
+                                        />
                                     }
                                 </TableCell>
                                 <TableCell align="right">{
@@ -105,19 +109,29 @@ const GasSelector = () => {
                                 <TableCell align="right">{gas.temperature.toPrecision(3)}</TableCell>
                                 <TableCell align="right">
                                     {
-                                        <ColorPicker initialColor={{ r: '0', g: '255', b: '0', a: '1', }} />
+                                        <ColorPicker initialColor={{ r: '255', g: '0', b: '0', a: '1', }} setColor={(newColor) => {
+                                            const newSelectedGases = [...selectedGases]
+                                            newSelectedGases[index] = { ...newSelectedGases[index], color: newColor }
+                                            dispatch(updateSelectedGases(newSelectedGases))
+                                        }} />
                                     }
                                 </TableCell>
                                 <TableCell align="right">
                                     {
-                                        <IconButton aria-label="delete">
-                                            <VisibilityOutlinedIcon />
+                                        <IconButton onClick={() => {
+                                            const newSelectedGases = [...selectedGases]
+                                            newSelectedGases[index] = { ...newSelectedGases[index], visibility: !newSelectedGases[index].visibility }
+                                            dispatch(updateSelectedGases(newSelectedGases))
+                                        }} >
+                                            {gas.visibility ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
                                         </IconButton>
                                     }
                                 </TableCell>
                                 <TableCell align="right">
                                     {
-                                        <IconButton aria-label="delete" disabled={selectedGases.length <= 1}>
+                                        <IconButton aria-label="delete" disabled={selectedGases.length <= 1} onClick={() => {
+                                            dispatch(updateSelectedGases(selectedGases.filter(entry => entry.filename !== gas.filename)))
+                                        }}>
                                             <DeleteOutlineOutlinedIcon />
                                         </IconButton>
                                     }

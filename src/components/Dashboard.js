@@ -9,51 +9,58 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Switch from '@mui/material/Switch';
 
-import Graph from "./Graph";
 import GasSelector from "./GasSelector";
+// import Graph from "./ReChartsGraph";
+import Graph from "./RootGraph";
 
 function Dashboard() {
 
-    const selectedGasesData = useSelector(state => Object.fromEntries(state.gas.selectedGases.map(gas => [gas, state.gas.loadedGases[gas]])))
+    const selectedGases = useSelector(state => state.gas.selectedGases)
+    const loadedGases = useSelector(state => state.gas.loadedGases)
 
-    const data = Object.keys(selectedGasesData).length === 0 ? undefined : selectedGasesData[Object.keys(selectedGasesData)[0]]
+    const [selectedGasesData, setSelectedGasesData] = useState([]);
+
+    useEffect(() => {
+        setSelectedGasesData(Array.from(selectedGases.map(gas => gas.visibility ? loadedGases[gas.filename] : undefined)).filter(x => x !== undefined))
+    }, [loadedGases, selectedGases])
 
     const [reducedElectricFieldSelected, setReducedElectricFieldSelected] = useState(false);
     const [quantityToPlot, setQuantityToPlot] = useState("drift-velocity");
 
-    const [x, setX] = useState([]);
-    const [y, setY] = useState([]);
     const [xTitle, setXTitle] = useState("");
     const [yTitle, setYTitle] = useState("");
 
-    useEffect(() => {
-        if (!data) {
-            return;
-        }
-        if (!reducedElectricFieldSelected) {
-            setX(data["electric_field"]);
-            setXTitle("Electric Field [V/cm]")
-        } else {
-            setX(data["electric_field"].map(x => x / data["pressure"]));
-            setXTitle("Electric Field / Pressure [V/cm/bar]")
-        }
-    }, [reducedElectricFieldSelected, data])
+    const [xData, setXData] = useState([]);
+    const [yData, setYData] = useState([]);
 
     useEffect(() => {
-        if (!data) {
-            return;
-        }
+        setXTitle(!reducedElectricFieldSelected ? "Electric Field [V/cm]" : "Electric Field / Pressure [V/cm/bar]")
+        setXData(selectedGasesData.map(data => {
+            return !reducedElectricFieldSelected ? data.electric_field : data.electric_field.map(e => e / data.pressure)
+        }))
+
+    }, [reducedElectricFieldSelected, selectedGasesData])
+
+    useEffect(() => {
         if (quantityToPlot === "drift-velocity") {
-            setY(data["electron_drift_velocity"].map(x => x * 1000)) // data is in cm/ns
             setYTitle("Drift Velocity (cm/μs)")
+            setYData(selectedGasesData.map(data => {
+                return data.electron_drift_velocity.map(x => x * 1000)
+            }))
         } else if (quantityToPlot === "longitudinal-diffusion") {
-            setY(data["electron_longitudinal_diffusion"])
             setYTitle("Diffusion Coefficient [√cm]")
+            setYData(selectedGasesData.map(data => {
+                return data.electron_longitudinal_diffusion
+            }))
         } else if (quantityToPlot === "transversal-diffusion") {
-            setY(data["electron_transversal_diffusion"])
             setYTitle("Diffusion Coefficient [√cm]")
+            setYData(selectedGasesData.map(data => {
+                return data.electron_transversal_diffusion
+            }))
         }
-    }, [quantityToPlot, data])
+    }, [quantityToPlot, selectedGasesData])
+
+    //    console.log("DATA: ", xData, yData)
 
     return (
         <div>
@@ -78,7 +85,7 @@ function Dashboard() {
                 />} label="Reduced Electric Field" />
             </FormControl>
 
-            <Graph x={x} y={y} xTitle={xTitle} yTitle={yTitle} />
+            <Graph xTitle={xTitle} yTitle={yTitle} xData={xData} yData={yData} />
         </div>
     );
 

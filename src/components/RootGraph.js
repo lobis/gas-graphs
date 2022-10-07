@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 const graphId = "jsroot-graph";
 
-const Graph = ({ x, y, xTitle, yTitle }) => {
+const Graph = ({ xData, yData, xTitle, yTitle }) => {
 
     const src = 'https://root.cern.ch/js/latest/scripts/JSRoot.core.js';
     const [JSROOT, setJSROOT] = useState();
@@ -50,16 +50,24 @@ const Graph = ({ x, y, xTitle, yTitle }) => {
         return;
     }
 
-    let graph = JSROOT.createTGraph(x.length, x, y);
-    window.graph = graph
-    graph.fLineColor = 2;
-    graph.fMarkerSize = 2;
+    if (!xData || !yData || xData.length !== yData.length) {
+        return;
+    }
 
-    let multiGraph = JSROOT.createTMultiGraph(graph);
+    const graphs = xData.map((x, index) => {
+        const y = yData[index];
+        let graph = JSROOT.createTGraph(x.length, x, y);
+        graph.fLineColor = 2;
+        graph.fMarkerSize = 2;
+        window.graph = graph
+        return graph
+    })
+
+    let multiGraph = JSROOT.createTMultiGraph(...graphs);
     // multiGraph.fTitle = "Gas Graphs"
 
     JSROOT.redraw(graphId, multiGraph, "").then(() => {
-        if (graph.fHistogram) {
+        if (multiGraph.fHistogram) {
             //graph.fHistogram.fXaxis.fTitle = xTitle;
             //graph.fHistogram.fYaxis.fTitle = yTitle;
         }

@@ -17,11 +17,11 @@ export const getAvailableGasFiles = () => async (dispatch) => {
     }
 }
 
-export const loadGasFile = (gasFile) => async (dispatch) => {
+export const loadGasFile = (filename) => async (dispatch) => {
     console.log("actions/loadGasFile")
     try {
-        const { data } = await api.fetchGasJson(gasFile)
-        dispatch({ type: actionTypes.LOAD_GAS_FILE, payload: { gasFile, data } })
+        const { data } = await api.fetchGasJson(filename)
+        dispatch({ type: actionTypes.LOAD_GAS_FILE, payload: { filename, data } })
     } catch (error) {
         console.error("actions/loadGasFile:", error.message)
     }
