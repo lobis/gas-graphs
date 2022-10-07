@@ -2,13 +2,15 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-function Graph({ xData = [], yData = [], names = [], xTitle = "", yTitle = "" }) {
+function Graph({ xData = [], yData = [], names = [], xTitle = "", yTitle = "", colors = [] }) {
 
     const graphData = xData.map((xPoints, gasIndex) => {
         return xPoints.map((x, index) => {
             return { x: x, [names[gasIndex]]: yData[gasIndex][index] }
         })
     }).flat()
+
+    console.log(colors)
 
     return (
         <div>
@@ -43,7 +45,7 @@ function Graph({ xData = [], yData = [], names = [], xTitle = "", yTitle = "" })
                     <Tooltip />
 
                     {names.map((name, index) => {
-                        return <Line key={index} type="monotone" dataKey={name} stroke="red" dot={false} animationDuration={0} />
+                        return <Line key={index} type="monotone" dataKey={name} stroke={colors[index] ? colors[index] : "red"} dot={false} animationDuration={0} />
                     })}
 
                     <Legend layout="horizontal" verticalAlign="top" align="center" />

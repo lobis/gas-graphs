@@ -13,6 +13,8 @@ import GasSelector from "./GasSelector";
 import Graph from "./ReChartsGraph";
 //import Graph from "./RootGraph";
 
+import { colorRGBToHex } from "./ColorPicker"
+
 function Dashboard() {
 
     const selectedGases = useSelector(state => state.gas.selectedGases)
@@ -85,7 +87,7 @@ function Dashboard() {
                 />} label="Reduced Electric Field" />
             </FormControl>
 
-            <Graph xTitle={xTitle} yTitle={yTitle} xData={xData} yData={yData} names={selectedGases.map(gas => gas.filename)} />
+            <Graph xTitle={xTitle} yTitle={yTitle} xData={xData} yData={yData} names={selectedGases.map(gas => gas.filename)} colors={selectedGases.map(gas => colorRGBToHex(gas.color))} />
         </div>
     );
 

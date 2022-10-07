@@ -66,3 +66,8 @@ const ColorPicker = ({ initialColor = { r: '255', g: '0', b: '0', a: '1', }, set
 }
 
 export default ColorPicker;
+
+export const colorRGBToHex = (color = { r: 255, g: 0, b: 0, a: 1 }) => {
+    const rgb = (color.r << 16) | (color.g << 8) | (color.b << 0);
+    return '#' + (0x1000000 + rgb).toString(16).slice(1);
+}
