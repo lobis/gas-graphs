@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 const graphId = "jsroot-graph";
 
-const Graph = ({ xData, yData, xTitle, yTitle }) => {
+const Graph = ({ xData = [], yData = [], xTitle = "", yTitle = "" }) => {
 
     const src = 'https://root.cern.ch/js/latest/scripts/JSRoot.core.js';
     const [JSROOT, setJSROOT] = useState();

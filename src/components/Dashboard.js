@@ -10,8 +10,8 @@ import FormLabel from '@mui/material/FormLabel';
 import Switch from '@mui/material/Switch';
 
 import GasSelector from "./GasSelector";
-// import Graph from "./ReChartsGraph";
-import Graph from "./RootGraph";
+import Graph from "./ReChartsGraph";
+//import Graph from "./RootGraph";
 
 function Dashboard() {
 
@@ -85,7 +85,7 @@ function Dashboard() {
                 />} label="Reduced Electric Field" />
             </FormControl>
 
-            <Graph xTitle={xTitle} yTitle={yTitle} xData={xData} yData={yData} />
+            <Graph xTitle={xTitle} yTitle={yTitle} xData={xData} yData={yData} names={selectedGases.map(gas => gas.filename)} />
         </div>
     );
 

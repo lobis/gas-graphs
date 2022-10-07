@@ -1,22 +1,14 @@
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-function Graph({ data = [{ x: [], y: [], name: "" }], xTitle, yTitle }) {
+function Graph({ xData = [], yData = [], names = [], xTitle = "", yTitle = "" }) {
 
-    const [graphData, setGraphData] = useState({});
-    const [graphNames, setGraphNames] = useState([]);
-
-    useEffect(() => {
-        const uniqueNames = new Set()
-        setGraphData(data.map(gasData => {
-            uniqueNames.add(gasData.name)
-            return gasData.x.map((x, index) => {
-                return { x: x, [gasData.name]: gasData.y[index] }
-            })
-        }).flat())
-        setGraphNames(Array.from(uniqueNames))
-    }, [data])
+    const graphData = xData.map((xPoints, gasIndex) => {
+        return xPoints.map((x, index) => {
+            return { x: x, [names[gasIndex]]: yData[gasIndex][index] }
+        })
+    }).flat()
 
     return (
         <div>
@@ -50,7 +42,7 @@ function Graph({ data = [{ x: [], y: [], name: "" }], xTitle, yTitle }) {
 
                     <Tooltip />
 
-                    {graphNames.map((name, index) => {
+                    {names.map((name, index) => {
                         return <Line key={index} type="monotone" dataKey={name} stroke="red" dot={false} animationDuration={0} />
                     })}
 
