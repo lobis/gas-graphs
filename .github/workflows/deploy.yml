@@ -60,6 +60,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: gas-files
+          path: public/gas
+
+      - name: Check gas files
+        run: |
+          ls -lht public/gas
+          ls -lht public/gas/garfield
+          ls -lht public/gas/json
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
