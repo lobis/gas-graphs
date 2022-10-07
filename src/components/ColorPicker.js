@@ -1,24 +1,24 @@
 import { GithubPicker } from 'react-color';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const ColorPicker = () => {
+const ColorPicker = ({ initialColor = { r: '255', g: '0', b: '0', a: '1', }, setColor }) => {
     const [state, setState] = useState({
         displayColorPicker: false,
-        color: {
-            r: '241',
-            g: '112',
-            b: '19',
-            a: '1',
-        },
+        color: initialColor
     });
+
+    useEffect(() => {
+        if (setColor) {
+            setColor(state.color)
+        }
+    }, [setColor, state.color])
 
     const handleClick = () => { setState({ ...state, displayColorPicker: !state.displayColorPicker }) }
 
     const handleClose = () => { setState({ ...state, displayColorPicker: false }) }
 
-    const handleChange = (color) => { setState({ ...state, color: color.rgb }) }
-
+    const handleChange = (newColor) => { setState({ ...state, color: newColor.rgb }) }
 
     const styles = {
         color: {

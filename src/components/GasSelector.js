@@ -105,7 +105,7 @@ const GasSelector = () => {
                                 <TableCell align="right">{gas.temperature.toPrecision(3)}</TableCell>
                                 <TableCell align="right">
                                     {
-                                        <ColorPicker />
+                                        <ColorPicker initialColor={{ r: '0', g: '255', b: '0', a: '1', }} />
                                     }
                                 </TableCell>
                                 <TableCell align="right">
