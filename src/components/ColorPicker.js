@@ -76,3 +76,41 @@ export const colorRGBToHex = (color = { r: 255, g: 0, b: 0, a: 1 }) => {
     const rgb = (color.r << 16) | (color.g << 8) | (color.b << 0);
     return '#' + (0x1000000 + rgb).toString(16).slice(1);
 }
+
+export const getDefaultColor = (index = 0) => {
+    const colors = [{
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 1
+    }, {
+        r: 0,
+        g: 255,
+        b: 0,
+        a: 1
+    }, {
+        r: 0,
+        g: 0,
+        b: 255,
+        a: 1
+    }, {
+        r: 255,
+        g: 255,
+        b: 0,
+        a: 1
+    }, {
+        r: 0,
+        g: 255,
+        b: 255,
+        a: 1
+    }, {
+        r: 255,
+        g: 0,
+        b: 255,
+        a: 1
+    }]
+    if (index >= colors.length) {
+        return colors[0]
+    }
+    return colors[index]
+}

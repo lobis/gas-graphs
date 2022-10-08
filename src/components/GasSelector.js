@@ -18,7 +18,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
 import { getAvailableGasFiles, loadGasFile, updateSelectedGases } from "../actions/gas.js"
-import ColorPicker from "./ColorPicker.js"
+import ColorPicker, { getDefaultColor } from "./ColorPicker.js"
 
 const GasSelector = () => {
     const dispatch = useDispatch()
@@ -50,7 +50,7 @@ const GasSelector = () => {
         })
     }, [dispatch, selectedGases, loadedGases])
 
-    const getGasSelectionObject = (gas) => { return { ...gas, visibility: true, color: { r: '255', g: '0', b: '0', a: '1', } } }
+    const getGasSelectionObject = (gas) => { return { ...gas, visibility: true, color: getDefaultColor(0) } }
     return (
         <div style={{
             justifyContent: 'center', alignItems: 'center', display: 'flex'
@@ -67,7 +67,10 @@ const GasSelector = () => {
                             <TableCell />
                             <TableCell align="right">
                                 <IconButton disabled={selectedGases.length >= 5} onClick={() => {
-                                    dispatch(updateSelectedGases([...selectedGases, getGasSelectionObject(availableGasFiles[0])]))
+                                    const nSelectedGases = selectedGases.length
+                                    const gas = getGasSelectionObject(availableGasFiles[Math.min(nSelectedGases, availableGasFiles.length - 1)])
+                                    gas.color = getDefaultColor(nSelectedGases)
+                                    dispatch(updateSelectedGases([...selectedGases, gas]))
                                 }}>
                                     <AddBoxOutlinedIcon color="success" />
                                 </IconButton>
