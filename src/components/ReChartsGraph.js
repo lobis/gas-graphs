@@ -1,8 +1,14 @@
 
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 function Graph({ xData = [], yData = [], names = [], xTitle = "", yTitle = "", colors = [] }) {
+
+    if (xData.length !== yData.length || xData.length !== names.length || xData.length !== colors.length) {
+        // some data may be ready earlier than others
+        // this causes a "flashing" effect that is not desirable
+        return
+    }
 
     const graphData = xData.map((xPoints, gasIndex) => {
         return xPoints.map((x, index) => {
@@ -20,7 +26,7 @@ function Graph({ xData = [], yData = [], names = [], xTitle = "", yTitle = "", c
                     margin={{
                         top: 0,
                         right: 20,
-                        left: 25,
+                        left: 10,
                         bottom: 20,
                     }}
                 >
@@ -30,13 +36,14 @@ function Graph({ xData = [], yData = [], names = [], xTitle = "", yTitle = "", c
                         allowDataOverflow
                         dataKey="x"
                         label={{ value: xTitle, offset: -10, position: "insideBottom" }}
+                        domain={[Math.round(Math.min(...graphData.map(entry => entry.x))), Math.round(Math.max(...graphData.map(entry => entry.x)))]}
                         type="number"
                     />
 
 
                     <YAxis
                         allowDataOverflow
-                        label={{ value: yTitle, angle: -90, position: 'insideLeft', offset: -10 }}
+                        label={{ value: yTitle, angle: -90, position: 'insideLeft', offset: 5 }}
                         type="number"
                     />
 
@@ -45,8 +52,6 @@ function Graph({ xData = [], yData = [], names = [], xTitle = "", yTitle = "", c
                     {xData.map((x, index) => {
                         return <Line key={index} type="linear" dataKey={names[index]} stroke={colors[index] ? colors[index] : "red"} dot={x.length < 100} animationDuration={0} />
                     })}
-
-                    <Legend layout="horizontal" verticalAlign="top" align="center" />
 
                 </LineChart>
             </ResponsiveContainer>
