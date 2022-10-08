@@ -8,6 +8,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Switch from '@mui/material/Switch';
+import Paper from '@mui/material/Paper';
 
 import GasSelector from "./GasSelector";
 import Graph from "./ReChartsGraph";
@@ -65,29 +66,52 @@ function Dashboard() {
     }, [quantityToPlot, selectedGasesData])
 
     return (
-        <div>
-            <GasSelector />
-            <FormControl id="plot-selection" style={{
+        <div >
+
+            <div style={{
                 justifyContent: 'center', alignItems: 'center', display: 'flex'
             }}>
-                <FormLabel>Graph Options</FormLabel>
-                <RadioGroup
-                    row
-                    name="controlled-radio-buttons-group"
-                    value={quantityToPlot}
-                    onChange={(event) => { setQuantityToPlot(event.target.value) }}
-                >
-                    <FormControlLabel value="drift-velocity" control={<Radio />} label="Drift Velocity" />
-                    <FormControlLabel value="longitudinal-diffusion" control={<Radio />} label="Longitudinal Diffusion" />
-                    <FormControlLabel value="transversal-diffusion" control={<Radio />} label="Transversal Diffusion" />
-                </RadioGroup>
-                <FormControlLabel control={<Switch
-                    checked={reducedElectricFieldSelected}
-                    onChange={() => { setReducedElectricFieldSelected(!reducedElectricFieldSelected) }}
-                />} label="Reduced Electric Field" />
-            </FormControl>
+                <GasSelector />
 
-            <Graph xTitle={xTitle} yTitle={yTitle} xData={xData} yData={yData} names={selectedGasesVisible.map((gas, index) => gas.filename + `_${index}`)} colors={selectedGasesVisible.map(gas => colorRGBToHex(gas.color))} />
+                <FormControl
+                    component={Paper} id="plot-selection"
+                    style={{
+                        justifyContent: 'center', alignItems: 'center', display: 'flex', padding: 10
+                    }}
+                    sx={{ minWidth: 600, maxWidth: 1200 }}
+                >
+                    <FormLabel>Graph Options</FormLabel>
+                    <RadioGroup
+                        row
+                        name="controlled-radio-buttons-group"
+                        value={quantityToPlot}
+                        onChange={(event) => { setQuantityToPlot(event.target.value) }}
+                    >
+                        <FormControlLabel value="drift-velocity" control={<Radio />} label="Drift Velocity" />
+                        <FormControlLabel value="longitudinal-diffusion" control={<Radio />} label="Longitudinal Diffusion" />
+                        <FormControlLabel value="transversal-diffusion" control={<Radio />} label="Transversal Diffusion" />
+                    </RadioGroup>
+                    <FormControlLabel control={<Switch
+                        checked={reducedElectricFieldSelected}
+                        onChange={() => { setReducedElectricFieldSelected(!reducedElectricFieldSelected) }}
+                    />} label="Reduced Electric Field" />
+                </FormControl>
+            </div>
+            <div style={{
+                justifyContent: 'center', alignItems: 'center', display: 'flex'
+                // TODO: Work on this style
+            }}
+            >
+                <Paper style={{
+                    margin: 20,
+                    padding: 15,
+                }}
+                    sx={{ minWidth: 1600, maxWidth: 1600 }}
+                >
+                    <Graph xTitle={xTitle} yTitle={yTitle} xData={xData} yData={yData} names={selectedGasesVisible.map((gas, index) => gas.filename + `_${index}`)} colors={selectedGasesVisible.map(gas => colorRGBToHex(gas.color))} />
+
+                </Paper>
+            </div>
         </div>
     );
 

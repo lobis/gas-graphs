@@ -55,14 +55,14 @@ const GasSelector = () => {
         <div style={{
             justifyContent: 'center', alignItems: 'center', display: 'flex'
         }}>
-            <TableContainer component={Paper} style={{ "margin": 20 }}>
-                <Table>
+            <TableContainer component={Paper} style={{ margin: 20 }} sx={{ minWidth: 650, maxWidth: 1000, margin: 50 }}>
+                <Table >
                     <TableHead>
                         <TableRow>
                             <TableCell align="left">Gas File</TableCell>
                             <TableCell align="right">Composition</TableCell>
-                            <TableCell align="right">Pressure&nbsp;(bar)</TableCell>
-                            <TableCell align="right">Temperature&nbsp;(ºC)</TableCell>
+                            <TableCell align="right">Pressure (bar)</TableCell>
+                            <TableCell align="right">Temperature (ºC)</TableCell>
                             <TableCell />
                             <TableCell />
                             <TableCell align="right">
