@@ -114,3 +114,4 @@ export const getDefaultColor = (index = 0) => {
     }
     return colors[index]
 }
+
