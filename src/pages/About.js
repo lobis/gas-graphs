@@ -22,7 +22,7 @@ const AboutPage = () => {
           <li>Innovative research and discoveries</li>
           <li>Collaborative projects and partnerships</li>
         </ul>
-          <a href="/contact" className><h2>Contact Us</h2></a>
+          <a href="/gas-graphs/contact" className><h2>Contact Us</h2></a>
         <p>For any inquiries or collaborations, please don't hesitate to reach out to us. We would love to hear from you!</p>
       </div>
       <Footer />

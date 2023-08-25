@@ -3,7 +3,6 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContai
 import Dashboard from './Dashboard';
 import '../style/Chart.css';
 
-
 const Chart = () => {
   const [data, setData] = useState([]);
   const [selectedOption, setSelectedOption] = useState({ value: 'Drift Velocity', label: 'Drift Velocity' });
@@ -24,7 +23,7 @@ const Chart = () => {
   useEffect(() => {
     setData([]);
   }, [dashboards]);
-
+  
   const handleYnameChange = (value) => {
     setYname(value);
   };
@@ -43,6 +42,14 @@ const Chart = () => {
       </g>
     );
   };
+const [XAxisSettings, setXAxisSettings] = useState({ scale: 'auto', domain: [0, 1000] });
+  useEffect(() => {
+    setXDataKey(selectedOption2.value);
+  
+    const xScale = selectedOption2.value === 'Logarithmic Electric Field' ? 'log' : 'auto';
+    const xDomain = selectedOption2.value === 'Logarithmic Electric Field' ? [0.1, 1000] : [0, 1000];
+    setXAxisSettings({ scale: xScale, domain: xDomain });
+  }, [selectedOption2]);
 
   return (
     <div>
@@ -57,31 +64,24 @@ const Chart = () => {
         setDashboards={setDashboards}
         setData={setData}
         setXDataKey={setXDataKey}
-        
       />
       <div className="chart">
         <ResponsiveContainer width="100%" height={400}>
           <LineChart margin={{ top: 30, right: 30, left: 30, bottom: 30 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
-            dataKey={xDataKey}
-            type="number"
-            scale = {selectedOption2.value === 'Logarithmic Electric Field' ? 'log' : 'auto'}
-            domain={[1, 'auto']}
-            tick={<CustomizedAxisTick />}
-            label={{ value: Xname?.value, position: 'insideBottom', offset: -15 }}
+              dataKey={xDataKey}
+              type="number"
+              scale={XAxisSettings.scale}
+              domain={XAxisSettings.domain}
+              tick={<CustomizedAxisTick />}
+              label={{ value: Xname?.value, position: 'insideBottom', offset: -15 }}
             />
             <YAxis label={{ value: Yname?.value, angle: -90, position: 'insideLeft', offset: 8, dy: 100 }} />
             {data.map((series, index) => (
-              <Line key={index} data={series} dot={false} activeDot={{ stroke: 'blue', strokeWidth: 2, r: 5 }} type="monotone" dataKey={selectedOption?.value}  />
+              <Line key={index} data={series} dot={false} activeDot={{ stroke: 'blue', strokeWidth: 2, r: 5 }} type="monotone" dataKey={selectedOption?.value} />
             ))}
-            <Tooltip 
-              formatter={(value) => [value, Yname?.value]}
-              separator='='
-              labelFormatter={(value) => [value, Xname?.value]}
-              position={{ x: 0, y: 0}}
-              
-            />
+            <Tooltip formatter={(value) => [value, Yname?.value]} separator="=" labelFormatter={(value) => [value, Xname?.value]} position={{ x: 0, y: 0 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>

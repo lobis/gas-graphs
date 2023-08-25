@@ -8,9 +8,9 @@ function Footer(){
 			<div className="footer-left">
 				<h3>Gas<span>Graphs</span></h3>
 				<p className="footer-links">
-					<a href="/">Home</a>
-					<a href="/about"> About</a>
-					<a href="/Contact"> Contact</a>
+					<a href="/gas-graphs/">Home</a>
+					<a href="/gas-graphs/about"> About</a>
+					<a href="/gas-graphs/contact"> Contact</a>
 				</p>
 			</div>
 			<div className="footer-center">
