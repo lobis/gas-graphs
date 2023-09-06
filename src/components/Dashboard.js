@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControl from '@mui/material/FormControl';
-import Box from '@mui/material/Box';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -15,6 +14,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import '../style/Dashboard.css';
 import API from '../api/api';
+import ColorPicker from './colorPicker';
 
 const Dashboard = ({
   selectedOption,
@@ -25,7 +25,7 @@ const Dashboard = ({
   handleXnameChange,
   setData,
   setXDataKey,
-}) => {
+  }) => {
   const [dashboards, setDashboards] = useState([
     {
       id: 1,
@@ -33,6 +33,7 @@ const Dashboard = ({
       secondGas: 'CH4',
       valueFirstGas: '80.0',
       valueSecondGas: '20.0',
+      color: 'blue',
     },
   ]);
 
@@ -40,15 +41,15 @@ const Dashboard = ({
     const newId = dashboards.length > 0 ? dashboards[dashboards.length - 1].id + 1 : 1;
     const newDashboard = {
       id: newId,
-      firstGas: 'Ar',
+      firstGas: 'Xe',
       secondGas: 'C4H10',
       valueFirstGas: '80.0',
       valueSecondGas: '20.0',
+      color: 'orange'
     };
     setDashboards((prevDashboards) => [...prevDashboards, newDashboard]);
   };
   
-
   const handleRemoveDashboard = (id) => {
     setDashboards((prevDashboards) => prevDashboards.filter((dashboard) => dashboard.id !== id));
   };
@@ -128,6 +129,29 @@ const Dashboard = ({
   if (dashboards.length > 4) {
     handleRemoveDashboard(dashboards.length);
   }
+  
+  const [downloadDashboard, setDownloadDashboard] = useState(null);
+
+  useEffect(() => {
+    if (downloadDashboard) {
+      const firstGas = downloadDashboard.firstGas;
+      const secondGas = downloadDashboard.secondGas;
+      const valueFirstGas = downloadDashboard.valueFirstGas;
+      const valueSecondGas = downloadDashboard.valueSecondGas;
+      const url = `https://lobis.github.io/gas-files/files/mixtures/${firstGas}-${secondGas}/${firstGas}_${valueFirstGas}-${secondGas}_${valueSecondGas}.gas`;
+      window.open(url, '_blank');
+      setDownloadDashboard(null); 
+    }
+  }, [downloadDashboard]);
+
+  const handleColorChange = (dashboardId, color) => {
+    setDashboards((prevDashboards) =>
+      prevDashboards.map((dashboard) =>
+        dashboard.id === dashboardId ? { ...dashboard, color: color.hex } : dashboard
+      )
+    );
+  };
+  
 
   return (
     <div className="dashboard-container">
@@ -164,7 +188,7 @@ const Dashboard = ({
                     onChange={(e) => setSelectedOption2({ value: e.target.value })}
                   >
                     <FormControlLabel value="Electric Field" control={<Radio />} label="Electric Field" />
-                    <FormControlLabel value="Electric Field / Pressure" control={<Radio />} label="Electric Field / Pressure" />
+                    <FormControlLabel value="Reduced Electric Field" control={<Radio />} label="Reduced Electric Field" />
                     <FormControlLabel value="Logarithmic Electric Field" control={<Radio />} label="Logarithmic Electric Field" />
                   </RadioGroup>
                 </FormControl>
@@ -174,15 +198,17 @@ const Dashboard = ({
         </Table>
       </div>
       <div className="second-table-container">
-        <Table className="second-table" sx={{ maxWidth: 750 }}>
+        <Table className="second-table" >
           <TableHead>
             <TableRow>
               <TableCell>First Gas</TableCell>
               <TableCell>First Gas Ratio</TableCell>
               <TableCell>Second Gas</TableCell>
               <TableCell>Second Gas Ratio</TableCell>
+              <TableCell>Color</TableCell>
               <TableCell>Actions</TableCell>
               <TableCell>Gas Mixture</TableCell>
+              <TableCell>Download Gas</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -208,7 +234,6 @@ const Dashboard = ({
                   </FormControl>
                 </TableCell>
                 <TableCell>
-                  <Box sx={{ maxWidth: 120, minWidth: 120 }}>
                     <Slider
                       aria-label="First Gas"
                       defaultValue={parseFloat(dashboard.valueFirstGas)}
@@ -219,7 +244,6 @@ const Dashboard = ({
                       value={parseFloat(dashboard.valueFirstGas)}
                       onChange={(e, newValue) => handleFirstGasSliderChange(e, newValue, dashboard.id)}
                     />
-                  </Box>
                 </TableCell>
                 <TableCell>
                   <FormControl fullWidth>
@@ -238,7 +262,6 @@ const Dashboard = ({
                   </FormControl>
                 </TableCell>
                 <TableCell>
-                  <Box sx={{ maxWidth: 120, minWidth: 120 }}>
                     <Slider
                       aria-label="Second Gas"
                       defaultValue={parseFloat(dashboard.valueSecondGas)}
@@ -249,7 +272,15 @@ const Dashboard = ({
                       value={parseFloat(dashboard.valueSecondGas)}
                       onChange={(e, newValue) => handleSecondGasSliderChange(e, newValue, dashboard.id)}
                     />
-                  </Box>
+                </TableCell>
+                <TableCell>
+                  <div className="color-picker">
+                    <ColorPicker 
+                      color={dashboard.color}
+                      colorChanged={(color) => handleColorChange(dashboard.id, color)}
+                      onChangeComplete={() => setData(prevData => [...prevData])}
+                    />
+                  </div>
                 </TableCell>
                 <TableCell>
                   <button onClick={() => handleAddDashboard()} className="btn-add">
@@ -264,12 +295,19 @@ const Dashboard = ({
                 <TableCell>
                   <h2>{dashboard.firstGas + '-' + dashboard.secondGas}</h2>
                 </TableCell>
+                <TableCell>
+                  <button onClick={() => setDownloadDashboard(dashboard)} className="btn-download"
+                  style={{backgroundColor: '#f2f2f2', border: 'none', cursor: 'pointer', outline: 'none', padding: '5px', borderRadius: '1px', boxShadow: '0 0 0 1px rgba(0,0,0,.1)', display: 'inline-block',}}
+                  >
+                    <i className="fa-sharp fa-solid fa-download"></i>
+                  </button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
-      <API dashboards={dashboards} setData={setData} selectedOption2={selectedOption2} />
+      <API dashboards={dashboards} setData={setData} selectedOption2={selectedOption2} />  
     </div>
   );
 };

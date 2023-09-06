@@ -19,15 +19,15 @@
 }
 
 .second-table-container {
-  width: 45%; 
-  max-width: 50%;
+  max-width: 60%;
   overflow-x: auto;
   border: 1px solid #ccc;
   border-radius: 5px;
   justify-content: center;
   align-items: center;
   display: inline-block;
-  margin: 10px;
+  margin: 8px;
+  max-height: fit-content;
 }
 
 .table-first {

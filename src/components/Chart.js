@@ -10,20 +10,6 @@ const Chart = () => {
   const [Yname, setYname] = useState({ value: '', label: '' });
   const [Xname, setXname] = useState({ value: '', label: '' });
   const [xDataKey, setXDataKey] = useState('Electric Field');
-  const [dashboards, setDashboards] = useState([
-    {
-      id: 1,
-      firstGas: 'Ar',
-      secondGas: 'CH4',
-      valueFirstGas: '80.0',
-      valueSecondGas: '20.0',
-    },
-  ]);
-
-  useEffect(() => {
-    setData([]);
-  }, [dashboards]);
-  
   const handleYnameChange = (value) => {
     setYname(value);
   };
@@ -53,18 +39,6 @@ const [XAxisSettings, setXAxisSettings] = useState({ scale: 'auto', domain: [0, 
 
   return (
     <div>
-      <Dashboard
-        selectedOption={selectedOption}
-        setSelectedOption={setSelectedOption}
-        selectedOption2={selectedOption2}
-        setSelectedOption2={setSelectedOption2}
-        handleYnameChange={handleYnameChange}
-        handleXnameChange={handleXnameChange}
-        dashboards={dashboards}
-        setDashboards={setDashboards}
-        setData={setData}
-        setXDataKey={setXDataKey}
-      />
       <div className="chart">
         <ResponsiveContainer width="100%" height={400}>
           <LineChart margin={{ top: 30, right: 30, left: 30, bottom: 30 }}>
@@ -79,12 +53,30 @@ const [XAxisSettings, setXAxisSettings] = useState({ scale: 'auto', domain: [0, 
             />
             <YAxis label={{ value: Yname?.value, angle: -90, position: 'insideLeft', offset: 8, dy: 100 }} />
             {data.map((series, index) => (
-              <Line key={index} data={series} dot={false} activeDot={{ stroke: 'blue', strokeWidth: 2, r: 5 }} type="monotone" dataKey={selectedOption?.value} />
+              <Line
+                key={index}
+                data={series}
+                dot={false}
+                activeDot={{ stroke: 'blue', strokeWidth: 2, r: 5 }}
+                strokeWidth={5}
+                type="monotone"
+                dataKey={selectedOption?.value}
+               />
             ))}
             <Tooltip formatter={(value) => [value, Yname?.value]} separator="=" labelFormatter={(value) => [value, Xname?.value]} position={{ x: 0, y: 0 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>
+      <Dashboard
+        selectedOption={selectedOption}
+        setSelectedOption={setSelectedOption}
+        selectedOption2={selectedOption2}
+        setSelectedOption2={setSelectedOption2}
+        handleYnameChange={handleYnameChange}
+        handleXnameChange={handleXnameChange}
+        setData={setData}
+        setXDataKey={setXDataKey}
+      />
     </div>
   );
 };
