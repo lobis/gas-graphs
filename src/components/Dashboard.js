@@ -17,14 +17,11 @@ import API from '../api/api';
 import ColorPicker from './colorPicker';
 
 const Dashboard = ({
-  selectedOption,
   setSelectedOption,
   setSelectedOption2,
   selectedOption2,
-  handleYnameChange,
-  handleXnameChange,
   setData,
-  setXDataKey,
+  setDataX,
   }) => {
   const [dashboards, setDashboards] = useState([
     {
@@ -102,27 +99,6 @@ const Dashboard = ({
     );
   };
 
-  useEffect(() => {
-    if (selectedOption?.value === 'Drift Velocity') {
-      handleYnameChange({ value: 'Drift Velocity (cm/μs)', label: 'Drift Velocity (cm/μs)' });
-    } else if (selectedOption?.value === 'Diffusion Coefficient') {
-      handleYnameChange({ value: 'Diffusion Coefficient [√cm]', label: 'Diffusion Coefficient [√cm]' });
-    } else if (selectedOption?.value === 'Transversal Diffusion') {
-      handleYnameChange({ value: 'Diffusion Coefficient [√cm]', label: 'Diffusion Coefficient [√cm]' });
-    }
-
-    if (selectedOption2?.value === 'Electric Field') {
-      setXDataKey('Electric Field');
-      handleXnameChange({ value: 'Electric Field', label: 'Electric Field' });
-    } else if (selectedOption2?.value === 'Electric Field / Pressure') {
-      setXDataKey('Electric Field / Pressure');
-      handleXnameChange({ value: 'Electric Field / Pressure', label: 'Electric Field / Pressure' });
-    } else if (selectedOption2?.value === 'Logarithmic Electric Field') {
-      setXDataKey('Electric Field');
-      handleXnameChange({ value: 'Logarithmic Electric Field', label: 'Logarithmic Electric Field' });
-    }
-  }, [selectedOption, selectedOption2, handleYnameChange, handleXnameChange, setXDataKey]);
-
   if (dashboards.length === 0) {
     handleAddDashboard();
   }
@@ -151,7 +127,6 @@ const Dashboard = ({
       )
     );
   };
-  
 
   return (
     <div className="dashboard-container">
@@ -307,7 +282,7 @@ const Dashboard = ({
           </TableBody>
         </Table>
       </div>
-      <API dashboards={dashboards} setData={setData} selectedOption2={selectedOption2} />  
+      <API dashboards={dashboards} setData={setData} setDataX={setDataX} selectedOption2={selectedOption2} />  
     </div>
   );
 };
