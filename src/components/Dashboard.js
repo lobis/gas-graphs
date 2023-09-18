@@ -22,6 +22,7 @@ const Dashboard = ({
   selectedOption2,
   setData,
   setDataX,
+  setColordash,
   }) => {
   const [dashboards, setDashboards] = useState([
     {
@@ -30,10 +31,9 @@ const Dashboard = ({
       secondGas: 'CH4',
       valueFirstGas: '80.0',
       valueSecondGas: '20.0',
-      color: 'blue',
+      color: '#1273de',
     },
   ]);
-
   const handleAddDashboard = () => {
     const newId = dashboards.length > 0 ? dashboards[dashboards.length - 1].id + 1 : 1;
     const newDashboard = {
@@ -42,7 +42,7 @@ const Dashboard = ({
       secondGas: 'C4H10',
       valueFirstGas: '80.0',
       valueSecondGas: '20.0',
-      color: 'orange'
+      color: '#1273de',
     };
     setDashboards((prevDashboards) => [...prevDashboards, newDashboard]);
   };
@@ -120,14 +120,22 @@ const Dashboard = ({
     }
   }, [downloadDashboard]);
 
-  const handleColorChange = (dashboardId, color) => {
+  const handleColorChange = (newColor, dashboardId) => {
     setDashboards((prevDashboards) =>
       prevDashboards.map((dashboard) =>
-        dashboard.id === dashboardId ? { ...dashboard, color: color.hex } : dashboard
+        dashboard.id  === dashboardId
+          ? { ...dashboard, color: newColor }
+          : dashboard
       )
     );
+  
+    setColordash((prevColorDash) => ({
+      ...prevColorDash,
+      [dashboardId -1 ]: newColor,
+    }));
   };
 
+  
   return (
     <div className="dashboard-container">
       <div className="first-table-container">
@@ -249,13 +257,12 @@ const Dashboard = ({
                     />
                 </TableCell>
                 <TableCell>
-                  <div className="color-picker">
-                    <ColorPicker 
-                      color={dashboard.color}
-                      colorChanged={(color) => handleColorChange(dashboard.id, color)}
-                      onChangeComplete={() => setData(prevData => [...prevData])}
-                    />
-                  </div>
+                <div className="color-picker">
+                  <ColorPicker
+                    selectedColor={dashboard.color}
+                    onColorChange={(color) => handleColorChange(color, dashboard.id)}
+                  />
+                </div>
                 </TableCell>
                 <TableCell>
                   <button onClick={() => handleAddDashboard()} className="btn-add">

@@ -18,14 +18,6 @@ function Footer(){
 					<i className="fa fa-map-marker"></i>
 					<p><span>Facultad de Ciencias </span>Pedro Cerbuna, 12. 50009 Zaragoza</p>
 				</div>
-				<div>
-					<i className="fa fa-phone"></i>
-					<p>Secretaría 976761262</p>
-				</div>
-				<div>
-					<i className="fa fa-envelope"></i>
-					<p>fteorica.unizar.es</p>
-				</div>
 			</div>
 			<div className="footer-right">
 				<div className="footer-icons">

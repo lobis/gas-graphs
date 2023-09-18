@@ -8,10 +8,10 @@ const Chart = () => {
   const [selectedOption2, setSelectedOption2] = useState({ value: 'Electric Field', label: 'Electric Field' });
   const [Yname, setYname] = useState({ value: '', label: '' });
   const [Xname, setXname] = useState({ value: '', label: '' });
-
+  const [colordash, setColordash] = useState('');
   useEffect(() => {
     if (selectedOption?.value === 'Drift Velocity') {
-      setYname({ value: 'Drift Velocity (cm/μs)', label: 'Drift Velocity (cm/μs)' });
+      setYname({ value: 'Drift Velocity [cm/μs]', label: 'Drift Velocity [cm/μs]' });
     } else if (selectedOption?.value === 'Diffusion Coefficient') {
       setYname({ value: 'Diffusion Coefficient [√cm]', label: 'Diffusion Coefficient [√cm]' });
     } else if (selectedOption?.value === 'Transversal Diffusion') {
@@ -35,12 +35,12 @@ const [XAxisSettings, setXAxisSettings] = useState({ scale: '', domain: [] , typ
     if (selectedOption2?.value === 'Electric Field') {
       setXAxisSettings({ scale: 'auto', domain: [0, 250, 500, 750, 1000] , type: 'number' , ticks: [0, 250, 500, 750, 1000]});
     } else if (selectedOption2?.value === 'Reduced Electric Field') {
-      setXAxisSettings({ scale: 'auto', domain: [0, 200, 400, 714] , type: 'number', ticks: [0, 200, 400, 714]});
+      setXAxisSettings({ scale: 'auto', domain: [0, 200, 400, 714, 1000] , type: 'number', ticks: [0, 200, 400, 714, 1000]});
     } else if (selectedOption2?.value === 'Logarithmic Electric Field') {
       setXAxisSettings({ scale: 'log', domain: [0.1, 1, 10 ,100 ,1000] , type: 'number', ticks: [0.1, 1, 10 ,100 ,1000]});
     }
   }, [selectedOption2]);
-
+  
   return (
     <div>
       <div className="chart">
@@ -65,6 +65,7 @@ const [XAxisSettings, setXAxisSettings] = useState({ scale: '', domain: [] , typ
                 strokeWidth={5}
                 type="monotone"
                 dataKey={selectedOption?.value}
+                stroke={colordash[index]}
                />
             ))}
             <Tooltip formatter={(value) => [value, Yname?.value]} separator="=" labelFormatter={(value) => [value, Xname?.value]} position={{ x: 0, y: 0 }} />
@@ -77,6 +78,8 @@ const [XAxisSettings, setXAxisSettings] = useState({ scale: '', domain: [] , typ
         selectedOption2={selectedOption2}
         setSelectedOption2={setSelectedOption2}
         setData={setData}
+        setColordash={setColordash}
+        colordash={colordash}
       />
     </div>
   );
