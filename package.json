@@ -1,4 +1,5 @@
 {
+  "homepage": "https://alperenkarslix.github.io/gas-graphs",
   "name": "gas-graphs",
   "version": "0.1.0",
   "private": true,
@@ -9,10 +10,13 @@
     "@mui/material": "^5.10.7",
     "@reduxjs/toolkit": "^1.8.5",
     "axios": "^1.0.0",
+    "gh-pages": "^6.0.0",
+    "js-file-download": "^0.4.12",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.4",
+    "react-router-dom": "^6.15.0",
     "react-scripts": "5.0.1",
     "recharts": "^2.1.14"
   },
@@ -22,13 +26,12 @@
     "@testing-library/user-event": "^13.5.0"
   },
   "scripts": {
-    "start": "npm run gasFilesList && react-scripts start",
-    "build": "npm run gasFilesList && react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "gasFilesList": "node ./scripts/gasFilesList.js",
-    "compressGarfieldGasFiles": "cd ./public/gas/garfield && for i in *.gas; do tar -czvf $i.tar.gz $i; done",
-    "uncompressGarfieldGasFiles": "cd ./public/gas/garfield && for i in *.gas.tar.gz; do tar -xzvf $i; done"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
