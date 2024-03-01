@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import Select from "react-select"
 import axios from "axios"
 import { Data } from "../App"
@@ -89,8 +89,8 @@ const GasMixtureTitle = ({ mixture, dataUrlMap }: GasMixtureTitleProps) => {
 }
 
 const GasMixtureSelector: React.FC<GasMixtureSelectorProps> = ({
-    onSelect
-}) => {
+                                                                   onSelect
+                                                               }) => {
     const [mixtures, setMixtures] = useState<Map<string, number[][]>>(new Map())
     const [selectedMixture, setSelectedMixture] = useState<string>("")
 
@@ -154,7 +154,8 @@ const GasMixtureSelector: React.FC<GasMixtureSelectorProps> = ({
             )
         }
 
-        initialUpdate().then(r => {})
+        initialUpdate().then(r => {
+        })
     }, [])
 
     const [components, setComponents] = useState<GasComponent[]>([])
@@ -162,33 +163,18 @@ const GasMixtureSelector: React.FC<GasMixtureSelectorProps> = ({
         MixtureComponentOption[]
     >([])
 
-    const [firstRender, setFirstRender] = useState(true)
-    useEffect(() => {
-        if (!firstRender) {
-            return
-        }
-        if (componentOptions.length === 0) {
-            return
-        }
-        handleGasMixtureChange([])
-        setFirstRender(false)
-    }, [componentOptions, firstRender])
-
-    const handleGasMixtureChange = (selectedOptions: any) => {
+    const handleGasMixtureChange = useCallback((selectedOptions: any) => {
         const selectedMixtures = selectedOptions.map(
             (option: any) => option.value
         )
         selectedMixtures.sort()
 
-        // Create a new array instead of mutating the existing one
         let updatedGasComponents: GasComponent[] = [...components]
 
-        // Remove gas components if not in selectedMixtures
         updatedGasComponents = updatedGasComponents.filter(component =>
             selectedMixtures.includes(component.name)
         )
 
-        // Add gas components if not in gasComponents
         selectedMixtures.forEach((mixture: string) => {
             if (
                 !updatedGasComponents.find(
@@ -212,7 +198,7 @@ const GasMixtureSelector: React.FC<GasMixtureSelectorProps> = ({
                 mixtures.get(componentNamesToKeys(potentialMixture)) ===
                 undefined
         }
-        // TODO: this currently works but may not work in all cases: If we have "Ar" and "Ar + CH4 + C4H10" but not "Ar + CH4" or "Ar + C4H10", then the chain is broken at some point
+
         setComponentOptions(updatedOptions)
 
         const mixtureName = componentNamesToKeys(selectedMixtures)
@@ -223,7 +209,6 @@ const GasMixtureSelector: React.FC<GasMixtureSelectorProps> = ({
             updatedGasComponents = []
         }
 
-        // set weights to the first available fractions
         updatedGasComponents.forEach((component, index) => {
             if (availableFractions) {
                 component.weight = availableFractions[0][index] * 100
@@ -231,7 +216,19 @@ const GasMixtureSelector: React.FC<GasMixtureSelectorProps> = ({
         })
 
         setComponents(updatedGasComponents)
-    }
+    }, [components, componentOptions, mixtures, setSelectedMixture, setComponentOptions, setComponents])
+
+    const [firstRender, setFirstRender] = useState(true)
+    useEffect(() => {
+        if (!firstRender) {
+            return
+        }
+        if (componentOptions.length === 0) {
+            return
+        }
+        handleGasMixtureChange([])
+        setFirstRender(false)
+    }, [componentOptions, firstRender, handleGasMixtureChange])
 
     useEffect(() => {
         const gasComponents: GasComponent[] = []
@@ -260,7 +257,7 @@ const GasMixtureSelector: React.FC<GasMixtureSelectorProps> = ({
         } else {
             onSelect(null)
         }
-    }, [components])
+    }, [components, dataMap, dataUrlMap, onSelect])
 
     const handleCompositionChange = (target: number, index: number) => {
         const availableFractions = mixtures.get(selectedMixture)
@@ -298,7 +295,8 @@ const GasMixtureSelector: React.FC<GasMixtureSelectorProps> = ({
     }
 
     return (
-        <div className="w-full max-w-screen-sm mx-auto my-4 p-4 bg-white rounded-lg shadow-lg flex flex-col items-center">
+        <div
+            className="w-full max-w-screen-sm mx-auto my-4 p-4 bg-white rounded-lg shadow-lg flex flex-col items-center">
             <GasMixtureTitle mixture={components} dataUrlMap={dataUrlMap} />
             <Select
                 className={"w-full mb-4"}
