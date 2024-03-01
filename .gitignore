@@ -10,12 +10,6 @@
 
 # production
 /build
-/public/gas/list.json
-*.gas
-*.gas.json
-public/gas/json/*
-public/gas/garfield/*
-!public/gas/garfield/*.gas.tar.gz
 
 # misc
 .DS_Store
@@ -27,6 +21,3 @@ public/gas/garfield/*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# dev
-/.vscode
