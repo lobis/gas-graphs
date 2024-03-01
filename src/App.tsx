@@ -1,7 +1,6 @@
 import React, { useState } from "react"
 import GasMixtureSelector from "./components/Selector"
 import Graph from "./components/Graph"
-import { Interface } from "node:readline"
 
 export interface Data {
     name: string

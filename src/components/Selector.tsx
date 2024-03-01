@@ -66,12 +66,20 @@ const GasMixtureTitle = ({ mixture, dataUrlMap }: GasMixtureTitleProps) => {
             <h1 className="text-2xl font-semibold">{mixtureString}</h1>
             <div className="flex text-lg">
                 {urlGasFile && (
-                    <a href={urlGasFile} target="_blank" className="m-2">
+                    <a
+                        href={urlGasFile}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="m-2">
                         Gas File
                     </a>
                 )}
                 {urlJson && (
-                    <a href={urlJson} target="_blank" className="m-2">
+                    <a
+                        href={urlJson}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="m-2">
                         JSON
                     </a>
                 )}
